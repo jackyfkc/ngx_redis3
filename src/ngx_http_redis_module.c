@@ -59,7 +59,7 @@ static ngx_command_t ngx_http_redis_commands[] = {
 		offsetof(ngx_http_redis_loc_conf_t, key),
 		NULL
 	},
-    {
+    	{
 		ngx_string("redis_connect_timeout"),
 		NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
 		ngx_conf_set_msec_slot,
@@ -113,14 +113,14 @@ ngx_module_t ngx_http_redis_module = {
 	NGX_MODULE_V1,
 	&ngx_http_redis_module_ctx,		/* module context */
 	ngx_http_redis_commands,		/* module directives */
-	NGX_HTTP_MODULE,				/* module type */
-	NULL,							/* init master */
-	NULL,							/* init module */
-	NULL,							/* init process */
-	NULL,							/* init thread */
-	NULL,							/* exit thread */
-	NULL,							/* exit process */
-	NULL,							/* exit master */
+	NGX_HTTP_MODULE,			/* module type */
+	NULL,					/* init master */
+	NULL,					/* init module */
+	NULL,					/* init process */
+	NULL,					/* init thread */
+	NULL,					/* exit thread */
+	NULL,					/* exit process */
+	NULL,					/* exit master */
 	NGX_MODULE_V1_PADDING
 };
 
@@ -137,8 +137,8 @@ ngx_http_redis_create_loc_conf(ngx_conf_t *cf)
 	}
 
 	conf->upstream.connect_timeout = NGX_CONF_UNSET_MSEC;
-    conf->upstream.send_timeout = NGX_CONF_UNSET_MSEC;
-    conf->upstream.read_timeout = NGX_CONF_UNSET_MSEC;
+    	conf->upstream.send_timeout = NGX_CONF_UNSET_MSEC;
+    	conf->upstream.read_timeout = NGX_CONF_UNSET_MSEC;
 
 	conf->upstream.buffering = 0;
 	/* Not used? */
@@ -161,10 +161,10 @@ ngx_http_redis_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
 	ngx_conf_merge_msec_value(conf->upstream.connect_timeout,
                               prev->upstream.connect_timeout, 60000);
 
-    ngx_conf_merge_msec_value(conf->upstream.send_timeout,
+    	ngx_conf_merge_msec_value(conf->upstream.send_timeout,
                               prev->upstream.send_timeout, 60000);
 
-    ngx_conf_merge_msec_value(conf->upstream.read_timeout,
+    	ngx_conf_merge_msec_value(conf->upstream.read_timeout,
                               prev->upstream.read_timeout, 60000);
 
 	ngx_conf_merge_bitmask_value(conf->upstream.next_upstream,
@@ -245,20 +245,20 @@ static ngx_int_t ngx_http_redis_create_request(ngx_http_request_t *r)
 	len += (rlcf->db > 9 ? 2 : 1) + rlcf->key.len;
 
 	/* Create temporary buffer for request with size len. */
-    buf = ngx_create_temp_buf(r->pool, len);
-    if (buf == NULL) {
-        return NGX_ERROR;
-    }
+    	buf = ngx_create_temp_buf(r->pool, len);
+    	if (buf == NULL) {
+        	return NGX_ERROR;
+    	}
 	ngx_snprintf(buf->pos, len, (char*)query.data, rlcf->db, &rlcf->key);
 	buf->last = buf->pos + len;
 
-    cl = ngx_alloc_chain_link(r->pool);
-    if (cl == NULL) {
-        return NGX_ERROR;
-    }
+    	cl = ngx_alloc_chain_link(r->pool);
+    	if (cl == NULL) {
+        	return NGX_ERROR;
+    	}
 
-    cl->buf = buf;
-    cl->next = NULL;
+    	cl->buf = buf;
+    	cl->next = NULL;
 
 	body = r->upstream->request_bufs;
 	r->upstream->request_bufs = cl;
@@ -407,18 +407,18 @@ ngx_http_redis_pass(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 
 	value = cf->args->elts;
 
-    ngx_memzero(&url, sizeof(ngx_url_t));
+    	ngx_memzero(&url, sizeof(ngx_url_t));
 
-    url.url = value[1];
-    url.no_resolve = 1;
+    	url.url = value[1];
+    	url.no_resolve = 1;
 
 	ngx_log_debug1(NGX_LOG_DEBUG_HTTP, cf->log, 0,
 		"ngx_http_redis_pass --> url: %V", url.url);
 
-    rlcf->upstream.upstream = ngx_http_upstream_add(cf, &url, 0);
-    if (rlcf->upstream.upstream == NULL) {
-        return NGX_CONF_ERROR;
-    }
+    	rlcf->upstream.upstream = ngx_http_upstream_add(cf, &url, 0);
+    	if (rlcf->upstream.upstream == NULL) {
+        	return NGX_CONF_ERROR;
+    	}
 
 	clcf = ngx_http_conf_get_module_loc_conf(cf, ngx_http_core_module);
 	clcf->handler = ngx_http_redis_handler;
